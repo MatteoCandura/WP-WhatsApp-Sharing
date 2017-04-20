@@ -9,3 +9,26 @@ defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
    Author URI: http://matteocandura.com
    License: GPL3
  */
+
+function register_ws_shortcode( $atts, $content="" ) {
+  extract(
+    shortcode_atts(
+      array(
+        'id' => null,
+        'class' => '',
+        'text' => __("Share via Whatsapp", 'wp-whatsapp-sharing')
+      ),
+      $atts
+    )
+  );
+
+  if( $id === null )
+    global $post;
+  else
+    $post = get_post($id);
+  
+  $title = sprintf( __('Share x via WhatsApp!', 'wp-whatsapp-sharing'), $post->post_title );
+
+  return wp_is_mobile() ? '<a href="whatsapp://send?text=' . get_permalink($post->ID) . '" class="' . $class . '" title="' . $title . '" data-action="share/whatsapp/share">' . $text . '</a>' : '';
+}
+add_shortcode( 'whatsapp_sharing', 'register_ws_shortcode' );
